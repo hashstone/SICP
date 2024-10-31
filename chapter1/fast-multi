@@ -1,0 +1,38 @@
+#lang sicp
+;(define (* a b)
+;  (if (= b 0)
+;      0
+;      (+ a (* a (- b 1)))))
+
+(define (* a b)
+  (define (double x)
+    (+ x x))
+  (define (halve x)
+    (/ x 2))
+  (define (even? n)
+    (= (remainder n 2) 0))
+  (cond ((= b 0) 0)
+        ((even? b) (double (* a (halve b))))
+        (else (+ a (* a (- b 1))))))
+
+(define (fast-multi a b res)
+  (define (double x)
+    (+ x x))
+  (define (halve x)
+    (/ x 2))
+  (define (even? n)
+    (= (remainder n 2) 0))
+  (cond ((= b 0) res)
+        ((even? b) (fast-multi (double a) (halve b) res))
+        (else (fast-multi a (- b 1) (+ res a)))))
+
+
+(* 12 12)
+(* 11 11)
+(* 3 7)
+(* 99 100)
+
+(fast-multi 12 12 0)
+(fast-multi 11 11 0)
+(fast-multi 3 7 0)
+(fast-multi 99 100 0)

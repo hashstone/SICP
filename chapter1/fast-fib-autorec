@@ -1,0 +1,25 @@
+#lang sicp
+; Tpq: a <- bq + a(p+q); b <- bp + aq
+; Tpq^2 == Tp'q'
+; Tp'q': p' = p^2 + q^2; q' = 2pq + q^2
+(define (fib n)
+  (fib-iter 1 0 0 1 n))
+
+(define (square x)
+  (* x x))
+
+(define (fib-iter a b p q n)
+  (cond ((= n 0) b)
+        ((even? n)
+         (fib-iter a
+                   b
+                   (+ (square p) (square q))
+                   (+ (* 2 p q) (square q))
+                   (/ n 2)))
+        (else (fib-iter (+ (* b q) (* a p) (* a q))
+                        (+ (* b p) (* a q))
+                        p
+                        q
+                        (- n 1)))))
+
+(fib 4)

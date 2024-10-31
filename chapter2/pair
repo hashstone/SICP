@@ -1,0 +1,73 @@
+#lang sicp
+(define (code-cons x y)
+  (define (dispatch m)
+    (cond ((= m 0) x)
+          ((= m 1) y)
+          (else (error "Argument not 0 or 1 -- CONS" m))))
+  dispatch)
+
+(define (code-car z) (z 0))
+(define (code-cdr z) (z 1))
+
+;;; 2.4
+(define (lambda-cons x y)
+  (lambda (m) (m x y)))
+
+(define (lambda-car z)
+  (z (lambda (p q) p)))
+
+(define (lambda-cdr z)
+  (z (lambda (p q) q)))
+
+(define tf (lambda-cons 3 4))
+(lambda-car tf)
+(lambda-cdr tf)
+(newline)
+
+
+;;; 2.5
+(define (fast-expt b n)
+  (define (square x)
+    (* x x))
+  (define (fast-expt-iter b n a)
+    (cond ((= n 0) a)
+          ((even? n) (fast-expt-iter (square b) (/ n 2) a))
+          (else (fast-expt-iter b (- n 1) (* b a)))))
+  (fast-expt-iter b n 1))
+
+(define (num-cons x y)
+  (* (fast-expt 2 x) (fast-expt 3 y)))
+
+(define (base-log x base)
+  (define (log-iter x i)
+    (cond ((= (remainder x base) 0) (log-iter (/ x base) (+ i 1)))
+          (else i)))
+  (log-iter x 0))
+
+(define (num-car z)
+  (base-log z 2))
+
+(define (num-cdr z)
+  (base-log z 3))
+
+(define tmp1 (num-cons 0 7))
+(num-car tmp1)
+(num-cdr tmp1)
+(define tmp2 (num-cons 3 9))
+(num-car tmp2)
+(num-cdr tmp2)
+(define tmp3 (num-cons 11 0))
+(num-car tmp3)
+(num-cdr tmp3)
+(newline)
+
+;;; 2.6
+(define zero (lambda (f) (lambda (x) x)))
+
+(define (add-1 n)
+  (lambda (f) (lambda (x) (f ((n f) x)))))
+
+;;; one: (lambda (f) (lambda (x) (f x)))
+;;; two: (lambda (f) (lambda (x) (f (f x))))
+(define (add x y)
+  (lambda (f) (lambda (x) ((x f) ((y f) x)))))

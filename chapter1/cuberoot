@@ -1,0 +1,31 @@
+#lang sicp
+(define (cube-root-iter pre-guess guess x)
+  (if (good-enough? pre-guess guess)
+      guess
+      (cube-root-iter guess (improve guess x) x)
+  )
+)
+
+(define (good-enough? pre cur)
+  (<
+    (/ (abs (- pre cur)) cur)
+    0.001)
+)
+
+(define (improve guess x)
+  (/ (+ (/ x (square guess)) (* 2 guess)) 3))
+
+(define (abs x)
+  (if (< x 0) 
+      (- x)
+      x))
+
+(define (square x)
+  (* x x))
+
+(define (cube-root x)
+  (cube-root-iter 0 1.0 x))
+
+(cube-root 27)
+(cube-root 8)
+(cube-root 0.000000001)

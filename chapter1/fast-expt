@@ -1,0 +1,28 @@
+#lang sicp
+(define (fast-expt-recursion b n)
+  (cond ((= n 0) 1)
+        ((even? n) (square (fast-expt-recursion b (/ n 2))))
+        (else (* b (fast-expt-recursion b (- n 1))))))
+
+(define (square x)
+  (* x x))
+
+;(define (fast-expt-iter b n a)
+;  (cond ((= n 0) a)
+;        ((even? n) (fast-expt-iter b (/ n 2) (* a (square b))))
+;        (else (fast-expt-iter b (- n 1) (* b a)))))
+
+(define (fast-expt-iter b n a)
+  (cond ((= n 0) a)
+        ((even? n) (fast-expt-iter (square b) (/ n 2) a))
+        (else (fast-expt-iter b (- n 1) (* b a)))))
+        
+(define (fast-expt b n)
+  (fast-expt-iter b n 1))
+
+(fast-expt 2 1)
+(fast-expt 2 2)
+(fast-expt 2 3)
+(fast-expt 2 4)
+(fast-expt 2 5)
+(fast-expt 2 11)

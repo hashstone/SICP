@@ -1,0 +1,58 @@
+#lang sicp
+(define (gcd x y)
+  (cond ((= y 0) x)
+        (else (gcd y (remainder x y)))))
+
+(define (add-rat x y)
+  (make-rat (+ (* (numer x) (denom y))
+               (* (numer y) (denom x)))
+            (* (denom x) (denom y))))
+
+(define (sub-rat x y)
+  (make-rat (- (* (numer x) (denom y))
+               (* (numer y) (denom x)))
+            (* (denom x) (denom y))))
+
+(define (mul-rat x y)
+  (make-rat (* (numer x) (numer y))
+            (* (denom x) (denom y))))
+
+(define (div-rat x y)
+  (make-rat (* (numer x) (denom y))
+            (* (denom x) (numer y))))
+
+(define (equal-rat? x y)
+  (= (* (numer x) (denom y))
+     (* (numer y) (denom x))))
+
+(define (make-rat n d)
+  (let ((neg (< (* n d) 0))
+        (an (abs n))
+        (ad (abs d))
+        (g (gcd (abs n) (abs d))))
+    (if neg
+        (cons (- (/ an g)) (/ ad g))
+        (cons (/ an g) (/ ad g)))))
+
+(define (numer x) (car x))
+
+(define (denom x) (cdr x))
+
+(define (print-rat x)
+  (newline)
+  (display (numer x))
+  (display "/")
+  (display (denom x)))
+
+(gcd 13 169)
+(gcd 4 64)
+(gcd 4 -64)
+
+(let ((one-half (make-rat 1 -2))
+      (one-third (make-rat 1 3)))
+  (print-rat (add-rat one-half one-third))
+  (print-rat (sub-rat one-half one-third))
+  (print-rat (mul-rat one-half one-third))
+  (print-rat (div-rat one-half one-third))
+  )
+

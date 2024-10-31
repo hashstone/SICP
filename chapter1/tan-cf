@@ -1,0 +1,34 @@
+#lang sicp
+(define (cont-frac nfunc dfunc k)
+  (define (cont-frac-dfs i)
+    (if (= i k)
+        (/ (nfunc i) (dfunc i))
+        (/ (nfunc i) (+ (dfunc i) (cont-frac-dfs (+ i 1))))))
+
+  ;(cont-frac-dfs 1)
+
+  (define (cont-frac-iter i last)
+    (if (= i 0)
+        last
+        (cont-frac-iter (- i 1) (/ (nfunc i) (+ (dfunc i) last)))))
+
+  (cont-frac-iter k 0)
+)
+
+
+(define (tan-cf x k)
+  (define (square x)
+    (* x x))
+  
+  (define (N i)
+    (if (= i 1)
+        x
+        (- (square x))))
+
+  (define (D i)
+    (- (* i 2) 1))
+
+  (cont-frac N D k))
+
+(tan-cf 10.0 100)
+(tan 10)

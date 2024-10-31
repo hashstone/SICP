@@ -1,0 +1,23 @@
+#lang sicp
+(define (sqrt x)
+  (define (sqrt-iter pre-guess guess)
+    (if (good-enough? pre-guess guess)
+        guess
+        (sqrt-iter guess (improve guess))
+        ))
+  (define (good-enough? pre cur)
+    (<
+     (/ (abs (- pre cur)) cur)
+     0.001))
+  (define (improve guess) (average guess (/ x guess)))
+  (define (average x y) (/ (+ x y) 2))
+  (define (square x) (* x x))
+
+  (sqrt-iter 0 1.0)
+)
+
+(sqrt 2)
+(sqrt 4)
+(sqrt 11)
+(sqrt 0.0000000001)
+(sqrt 400000000)
