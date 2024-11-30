@@ -116,3 +116,54 @@
 (sum-three-num 7 11)
 
 ; 2.42
+(newline)
+
+(define (safe? k positions)
+  (define (iter new-row rest-positions i)
+    (if (null? rest-positions)
+        #t
+        (let ((cur-row (car rest-positions)))
+          (if (or (= new-row cur-row)
+                  (= new-row (+ cur-row i))
+                  (= new-row (- cur-row i)))
+              #f
+              (iter new-row (cdr rest-positions) (+ i 1))))))
+  (iter (car positions) (cdr positions) 1))
+
+
+(define empty-board nil)
+
+(define (adjoin-position new-row k rest-of-queens)
+  (cons new-row rest-of-queens))
+
+(define (queens board-size)
+  (define (queen-cols k)
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions) (safe? k positions))
+         (flatmap
+          (lambda (rest-of-queens)
+            (map (lambda (new-row) (adjoin-position new-row k rest-of-queens))
+                 (enumerate-interval 1 board-size)))
+          (queen-cols (- k 1))))))
+  (queen-cols board-size))
+
+(queens 8)
+
+; 2.43
+(newline)
+(define (queens-slow board-size)
+  (define (queen-cols k)
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions) (safe? k positions))
+         (flatmap
+          (lambda (new-row)
+            (map (lambda (rest-of-queens) (adjoin-position new-row k rest-of-queens))
+                 (queen-cols (- k 1))))
+          (enumerate-interval 1 board-size)))))
+  (queen-cols board-size))
+
+(queens-slow 8)
