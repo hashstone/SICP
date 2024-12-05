@@ -263,3 +263,46 @@
         (else (append set1 set2))
   )
 )
+
+; sorted list
+(define (element-of-sorted-set? x set)
+  (cond ((null? set) false)
+        ((= x (car set)) true)
+        ((< x (car set)) false)
+        (else (element-of-sorted-set? x (cdr set)))))
+
+(define (intersection-sorted-set set1 set2)
+  (if (or (null? set1) (null? set2))
+      '()
+      (let ((x1 (car set1)) (x2 (car set2)))
+        (cond ((= x1 x2)
+               (cons x1 (intersection-sorted-set (cdr set1) (cdr set2))))
+              ((< x1 x2)
+               (intersection-sorted-set (cdr set1) set2))
+              ((< x2 x1)
+               (intersection-sorted-set set1 (cdr set2)))))))
+
+; 2.61
+(define (adjoin-sorted-set x set)
+  (cond ((null? set) (cons x set))
+        ((> x (car set)) (cons (car set) (adjoin-sorted-set x (cdr set))))
+        (else (cons x set))))
+
+; 2.62
+(define (union-sorted-set set1 set2)
+  (cond ((null? set1) set2)
+        ((null? set2) set1)
+        (else
+         (let ((x1 (car set1)) (x2 (car set2)))
+           (if (< x1 x2)
+               (cons x1 (union-sorted-set (cdr set1) set2))
+               (cons x2 (union-sorted-set set1 (cdr set2))))))))
+
+(define s1 (list 1 3 5 7 9 9 11 13 13))
+(define s2 (list 1 2 4 6 8 11 12 13))
+(element-of-sorted-set? 7 s1)
+(element-of-sorted-set? 13 s2)
+(intersection-sorted-set s1 s2)
+(adjoin-sorted-set 0 s1)
+(adjoin-sorted-set 10 s2)
+(union-sorted-set s1 s2)
