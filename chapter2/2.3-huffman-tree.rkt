@@ -122,3 +122,18 @@
 (display sample-tree)
 
 ; 2.70
+(define music-pairs '((A 2) (NA 16) (BOOM 1) (SHA 3) (GET 2) (YIP 9) (JOB 2) (WAH 1)))
+(define music-huffman-tree (generate-huffman-tree music-pairs))
+;(display music-huffman-tree)
+(define lyric '(GET A JOB SHA NA NA NA NA NA NA NA NA GET A JOB SHA NA NA NA NA NA NA NA NA WAH YIP YIP YIP YIP YIP YIP YIP YIP YIP SHA BOOM))
+(newline)
+(encode lyric music-huffman-tree)
+
+; 2.71
+; most frequently use 1 bit
+; least frequently use n-1 bit
+
+; 2.72
+; ?
+; most frequently O(n)
+; least frequently O(n^2)
