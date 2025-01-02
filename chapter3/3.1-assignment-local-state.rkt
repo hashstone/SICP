@@ -95,6 +95,8 @@
 ; 3.5
 (newline)
 (display "=====> begin test section 3.1.2\n")
+(define (square x) (* x x))
+
 ;; https://stackoverflow.com/questions/1537921/simple-pseudo-random-algorithm/23875298
 (define random-init 1)
 
@@ -111,8 +113,20 @@
       (set! x (rand-update x))
       x)))
 
-(define (estimate-pi trials)
-  (sqrt (/ 6 (monte-carlo trials cesaro-test))))
+;;; fix me! random@racket only support integer
+(define (random-in-range low high)
+  (let ((range (- high low)))
+    (+ low (random range))))
+
+;(define (estimate-pi trials)
+;  (sqrt (/ 6 (monte-carlo trials cesaro-test))))
+
+(define (estimate-integral P x1 y1 x2 y2 trials)
+  (let ((test (lambda () (P (random-in-range x1 x2)
+                            (random-in-range y1 y2)))))
+    (* (monte-carlo trials test)
+       (- x2 x1)
+       (- y2 y1))))
 
 (define (cesaro-test)
   (= (gcd (rand) (rand)) 1))
@@ -124,4 +138,35 @@
           (else (iter (- trials-remaining 1) trials-passed))))
   (iter trials 0))
 
-(estimate-pi 100000)
+(define (estimate-pi trials)
+  (let ((pred (lambda (x y)
+                (<= (+ (square x) (square y)) 1))))
+    (estimate-integral pred -1 -1 1 1 trials)))
+
+(estimate-pi 1000000)
+
+; 3.6
+; 注意闭包写法 (define {closure-name} (lambda (m) (cond ...)))
+(newline)
+(define rand-opt
+  (let ((x random-init))
+    (define (generate)
+      (set! x (rand-update x))
+      x)
+
+    (define (reset nx)
+      (set! x nx)
+      x)
+
+    (lambda (m)
+      (cond ((eq? m 'generate) (generate))
+            ((eq? m 'reset) reset)
+            (else (error "not support" m))))))
+
+(rand-opt 'generate)
+(rand-opt 'generate)
+(rand-opt 'generate)
+((rand-opt 'reset) 1)
+(rand-opt 'generate)
+(rand-opt 'generate)
+(rand-opt 'generate)
