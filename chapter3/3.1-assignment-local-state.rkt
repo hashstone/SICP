@@ -3,7 +3,7 @@
 ;(require racket/trace)
 
 ; 3.1
-(newline)
+(display "=====> begin test section 3.1\n")
 (define (make-accumulator sum)
   (define (add num)
     (set! sum (+ sum num))
@@ -19,7 +19,7 @@
 (A2 13)
 
 ; 3.2
-(newline)
+(display "=====> begin test section 3.2\n")
 (define (make-monitored f)
   (define times 0)
   (define (wrapper-f arg)
@@ -45,7 +45,7 @@
 (s 'how-many-calls?)
 
 ; 3.3, 3.4
-(newline)
+(display "=====> begin test section 3.3 - 3.4\n")
 (define (make-account balance password)
   (define failtimes (make-monitored (make-accumulator 0)))
 
@@ -76,6 +76,7 @@
     (if (verify pass)
         (cond ((eq? m 'withdraw) withdraw)
               ((eq? m 'deposit) deposit)
+              ((eq? m 'balance) (lambda () balance))
               (else (error "Unknow request --MAKE-ACCOUNT" m)))
         errorhandle))
 
@@ -87,6 +88,7 @@
 ((acc 'hahaha 'withdraw) 60)
 ((acc 'hahaha 'deposit) 40)
 ((acc 'hahaha 'withdraw) 60)
+((acc 'hahaha 'balance))
 ((acc 'aaa 'withdraw) 60)
 ((acc 'aaa 'withdraw) 60)
 ((acc 'aaa 'withdraw) 60)
@@ -94,7 +96,7 @@
 
 ; 3.5
 (newline)
-(display "=====> begin test section 3.1.2\n")
+(display "=====> begin test section 3.5\n")
 (define (square x) (* x x))
 
 ;; https://stackoverflow.com/questions/1537921/simple-pseudo-random-algorithm/23875298
@@ -146,6 +148,7 @@
 (estimate-pi 1000000)
 
 ; 3.6
+(display "=====> begin test section 3.6\n")
 ; 注意闭包写法 (define {closure-name} (lambda (m) (cond ...)))
 (newline)
 (define rand-opt
@@ -170,3 +173,49 @@
 (rand-opt 'generate)
 (rand-opt 'generate)
 (rand-opt 'generate)
+
+; 3.7
+(display "=====> begin test section 3.7\n")
+(define (make-joint user raw-password joint-password)
+  (define (verify pass)
+    (if (eq? joint-password pass)
+        #t
+        #f))
+
+  (define (errorhandle m)
+    (lambda (x)
+      "Incorrect password"))
+
+  (define (dispatch pass m)
+    (if (verify pass)
+        (user raw-password m)
+        (errorhandle m)))
+
+  dispatch)
+
+(define peter-acc (make-account 100 'peter))
+(define paul-acc (make-joint peter-acc 'peter 'paul))
+((peter-acc 'peter 'balance)) ; 100
+((paul-acc 'peter 'withdraw) 20)
+((paul-acc 'paul 'withdraw) 20)
+((peter-acc 'peter 'balance)) ; 80
+((peter-acc 'peter 'withdraw) 13)
+((paul-acc 'paul 'balance))
+
+
+; 3.8
+(display "=====> begin test section 3.8\n")
+(define f
+  (let ((l '()))
+    (lambda (x)
+      (if (null? l)
+          (begin
+            (set! l (cons x l))
+            (car l))
+          (car l)))))
+
+;(f 1)
+;(f 0)
+(f 0)
+(f 1)
+
